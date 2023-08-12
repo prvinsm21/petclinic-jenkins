@@ -1,9 +1,13 @@
 pipeline {
     agent any
+    tools {
+        jdk 'jdk11'
+        maven 'maven3'
+    }
     environment {
         DOCKERHUB_USERNAME = "prvinsm21"
-        DOCKERHUB_CREDENTIALS = credentialsID('dockerhub')
-        DOCKERHUB_REGISTRY = "prvinsm21/petclinic-jenkins-$BUILDNUMBER"
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub')
+        DOCKERIMAGE_NAME = "prvinsm21/petclinic-jenkins:${BUILDNUMBER}"
     }
 
     stages {
@@ -13,5 +17,21 @@ pipeline {
                 sh 'echo Passed'
             }
         }
+        stage ('Compile and Build Artifacts') {
+            steps {
+                sh 'mvn clean package -DskippTests=true'
+            }
+        }
+        stage ('Test Cases') {
+            steps {
+                sh 'mvn test'
+            }
+            post{
+                always {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                }
+            }
+        }
+        
     }
 }
