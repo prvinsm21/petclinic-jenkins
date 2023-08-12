@@ -17,9 +17,9 @@ pipeline {
                 sh 'echo Passed'
             }
         }
-        stage ('Compile and Build Artifacts') {
+        stage ('Compile') {
             steps {
-                sh 'mvn clean package -DskippTests=true'
+                sh 'mvn clean compile'
             }
         }
         stage ('Test Cases') {
