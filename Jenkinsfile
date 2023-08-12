@@ -17,12 +17,18 @@ pipeline {
                 sh 'echo Passed'
             }
         }
-        stage ('Compile') {
+        stage ('Build') {
             steps {
-                sh 'mvn clean compile'
+                sh 'mvn clean package'
+            }
+            post {
+                success {
+                    echo "Now Archiving...!"
+                    archiveArtifacts artifacts: '**/trget/*.war'
+                }
             }
         }
-        stage ('Test Cases') {
+        stage ('Unit Cases') {
             steps {
                 sh 'mvn test'
             }
