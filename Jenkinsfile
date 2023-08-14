@@ -17,9 +17,9 @@ pipeline {
                 sh 'echo Passed'
             }
         }
-        stage ('Build') {
+        stage ('Code Compile') {
             steps {
-                sh 'mvn clean package -DskipTests=true'
+                sh 'mvn clean compile'
             }
         }
         stage ('Unit Cases') {
@@ -30,6 +30,11 @@ pipeline {
                 always {
                     junit '**/target/surefire-reports/TEST-*.xml'
                 }
+            }
+        }
+        stage ('Packaging compiled code') {
+            steps {
+                sh 'mvn clean package -DskipTests=true'
             }
         }
         stage ('Integration Test') {
@@ -51,6 +56,25 @@ pipeline {
                 script {
                     waitForQualityGate abortPipeline:false, credentialsId: 'sonar-api'
                 }
+            }
+        }
+        stage("OWASP Dependency Check"){
+            steps{
+                dependencyCheck additionalArguments: '--scan ./ --format HTML ', odcInstallation: 'DP'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        stage ('Build Code') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+        stage ('Build Docker image') {
+            steps {
+                sh '''
+                    docker build . -t ${DOCKERIMAGE_NAME}
+                    docker images
+                '''
             }
         }
         
