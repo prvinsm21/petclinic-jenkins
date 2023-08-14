@@ -21,12 +21,6 @@ pipeline {
             steps {
                 sh 'mvn clean package -DskipTests=true'
             }
-            post {
-                success {
-                    echo "Now Archiving...!"
-                    archiveArtifacts artifacts: '**/trget/*.jar'
-                }
-            }
         }
         stage ('Unit Cases') {
             steps {
