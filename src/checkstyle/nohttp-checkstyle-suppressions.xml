@@ -1,0 +1,23 @@
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-checkstyle-plugin</artifactId>
+    <version>${maven-checkstyle.version}</version>
+    <dependencies>
+        <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
+        </dependency>
+        <!-- Remove the <dependency> for nohttp-checkstyle -->
+    </dependencies>
+    <executions>
+        <execution>
+            <id>nohttp-checkstyle-validation</id>
+            <phase>validate</phase>
+            <!-- Remove the <configuration> section for suppressions -->
+            <goals>
+                <goal>check</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
