@@ -19,7 +19,7 @@ pipeline {
         }
         stage ('Code Compile') {
             steps {
-                sh 'mvn clean compile'
+                sh 'mvn compile'
             }
         }
         stage ('Unit Cases') {
