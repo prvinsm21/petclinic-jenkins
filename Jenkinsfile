@@ -18,6 +18,11 @@ pipeline {
             }
         
         }
+        stage ('Packaging compiled code') {
+            steps {
+                sh 'mvn clean package -DskipTests=true'
+            }
+        }
         stage ('Unit Cases') {
             steps {
                 sh 'mvn test'
@@ -28,11 +33,7 @@ pipeline {
                 }
             }
         }
-        stage ('Packaging compiled code') {
-            steps {
-                sh 'mvn clean package -DskipTests=true'
-            }
-        }
+        
         stage ('Integration Test') {
             steps {
                 sh 'mvn verify -DskipUnitTests'
