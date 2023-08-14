@@ -16,11 +16,7 @@ pipeline {
             steps {
                 sh 'echo Passed'
             }
-        }
-        stage ('Code Compile') {
-            steps {
-                sh 'mvn clean compile'
-            }
+        
         }
         stage ('Unit Cases') {
             steps {
