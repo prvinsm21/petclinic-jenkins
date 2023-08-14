@@ -1,6 +1,9 @@
-FROM openjdk:8
-EXPOSE 8085
+FROM adoptopenjdk/openjdk8:alpine-jre
 
-ADD target/petclinic-jenkins.jar petclinic-jenkins.jar
+ARG  artifact=target/petclinic-jenkins.jar
 
-ENTRYPOINT [ "java", "-jar", "/petclinic-jenkins.jar" ]
+WORKDIR /opt/app 
+
+COPY ${artifact} app.jar 
+
+ENTRYPOINT [ "java", "-jar", "app.jar" ]
