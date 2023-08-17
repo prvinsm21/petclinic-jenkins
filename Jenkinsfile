@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        jdk 'jdk17'
+        jdk 'jdk11'
         maven 'maven3'
     }
     environment {
@@ -16,11 +16,10 @@ pipeline {
             steps {
                 sh 'echo Passed'
             }
-        
         }
-        stage ('Packaging compiled code') {
+        stage ('Code Compile') {
             steps {
-                sh 'mvn clean package -DskipTests=true'
+                sh 'mvn clean compile'
             }
         }
         stage ('Unit Cases') {
@@ -33,7 +32,11 @@ pipeline {
                 }
             }
         }
-        
+        stage ('Packaging compiled code') {
+            steps {
+                sh 'mvn clean package -DskipTests=true'
+            }
+        }
         stage ('Integration Test') {
             steps {
                 sh 'mvn verify -DskipUnitTests'
