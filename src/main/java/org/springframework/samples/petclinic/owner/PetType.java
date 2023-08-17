@@ -15,13 +15,14 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
 import org.springframework.samples.petclinic.model.NamedEntity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-
 /**
- * @author Juergen Hoeller Can be Cat, Dog, Hamster...
+ * @author Juergen Hoeller
+ *         Can be Cat, Dog, Hamster...
  */
 @Entity
 @Table(name = "types")

@@ -16,22 +16,26 @@
 package org.springframework.samples.petclinic.owner;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PropertyComparator;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.NamedEntity;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OrderBy;
-import jakarta.persistence.Table;
+import org.springframework.samples.petclinic.visit.Visit;
 
 /**
  * Simple business object representing a pet.
@@ -44,41 +48,66 @@ import jakarta.persistence.Table;
 @Table(name = "pets")
 public class Pet extends NamedEntity {
 
-	@Column(name = "birth_date")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate birthDate;
+    @Column(name = "birth_date")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
 
-	@ManyToOne
-	@JoinColumn(name = "type_id")
-	private PetType type;
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private PetType type;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "pet_id")
-	@OrderBy("visit_date ASC")
-	private Set<Visit> visits = new LinkedHashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private Owner owner;
 
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
+    @Transient
+    private Set<Visit> visits = new LinkedHashSet<>();
 
-	public LocalDate getBirthDate() {
-		return this.birthDate;
-	}
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
 
-	public PetType getType() {
-		return this.type;
-	}
+    public LocalDate getBirthDate() {
+        return this.birthDate;
+    }
 
-	public void setType(PetType type) {
-		this.type = type;
-	}
+    public PetType getType() {
+        return this.type;
+    }
 
-	public Collection<Visit> getVisits() {
-		return this.visits;
-	}
+    public void setType(PetType type) {
+        this.type = type;
+    }
 
-	public void addVisit(Visit visit) {
-		getVisits().add(visit);
-	}
+    public Owner getOwner() {
+        return this.owner;
+    }
+
+    protected void setOwner(Owner owner) {
+        this.owner = owner;
+    }
+
+    protected Set<Visit> getVisitsInternal() {
+        if (this.visits == null) {
+            this.visits = new HashSet<>();
+        }
+        return this.visits;
+    }
+
+    protected void setVisitsInternal(Collection<Visit> visits) {
+        this.visits = new LinkedHashSet<>(visits);
+    }
+
+    public List<Visit> getVisits() {
+        List<Visit> sortedVisits = new ArrayList<>(getVisitsInternal());
+        PropertyComparator.sort(sortedVisits,
+                new MutableSortDefinition("date", false, false));
+        return Collections.unmodifiableList(sortedVisits);
+    }
+
+    public void addVisit(Visit visit) {
+        getVisitsInternal().add(visit);
+        visit.setPetId(this.getId());
+    }
 
 }
