@@ -7,7 +7,7 @@ pipeline {
     environment {
         DOCKERHUB_USERNAME = "prvinsm21"
         DOCKERHUB_CREDENTIALS = credentials('dockerhub')
-        DOCKERIMAGE_NAME = "prvinsm21/petclinic-jenkins:${BUILDNUMBER}"
+        DOCKERIMAGE_NAME = "prvinsm21/petclinic-jenkins:${BUILD_NUMBER}"
     }
 
     stages {
