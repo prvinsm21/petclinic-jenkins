@@ -90,15 +90,27 @@ pipeline {
         stage ('Build Docker image') {
             steps {
                 sh '''
-                    sh 'echo *******Docker Build stage Started******'
                     docker build . -t ${DOCKERIMAGE_NAME}
                     docker images
-                    def dockerImage = docker.image("${DOCKERIMAGE_NAME}")
-                    docker.withRegistry('https://index.docker.io/v1/', "dockerhub") {
-                    dockerImage.push()
                 '''
             }
         }
+        stage ('Trivy Image Scanning') {
+            steps {
+                sh 'trivy image ${DOCKERIMAGE_NAME} > $WORKSPACE/trivy-image-scan-$BUILD_NUMBER.txt'
+            }
+        }
+        stage ('Push Docker image') {
+            steps {
+                script {
+                    def dockerImage = docker.image("${DOCKERIMAGE_NAME}")
+                    docker.withRegistry('https://index.docker.io/v1/', "dockerhub") {
+                    dockerImage.push()
+                    }
+                }
+            }
+        }
+
         
     }
 }
