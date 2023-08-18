@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: petclinic
-        image: prvinsm21/petclinic-jenkins:replaceImageTag
+        image: prvinsm21/petclinic-jenkins:latest
         resources:
           limits:
             memory: "128Mi"
