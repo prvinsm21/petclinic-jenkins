@@ -78,7 +78,7 @@ pipeline {
                         ]
                     ], 
                     credentialsId: 'nexus-auth', 
-                    groupId: 'com.macko', 
+                    groupId: 'org.springframework.samples', 
                     nexusUrl: '192.168.29.38:8081', 
                     nexusVersion: 'nexus3', 
                     protocol: 'http', 
