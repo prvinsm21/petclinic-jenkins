@@ -1,6 +1,6 @@
 FROM adoptopenjdk/openjdk8:alpine-jre
 
-ARG  artifact=target/spring-petclinic-2.2.4.RELEASE.jar
+ARG  artifact=target/spring-petclinic-2.2.0.BUILD-SNAPSHOT.jar
 
 WORKDIR /opt/app 
 
